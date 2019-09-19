@@ -23,7 +23,7 @@ var api = new ParseServer({
   // Mailgun setting
   verifyUserEmails: true,
   publicServerURL: 'https://atv-api.herokuapp.com/parse',
-  appName: 'Atv',
+  appName: 'atv-api',
   emailAdapter: { 
     module: 'parse-server-simple-mailgun-adapter',
     options: { 
