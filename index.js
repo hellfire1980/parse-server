@@ -21,7 +21,7 @@ var api = new ParseServer({
   appName: process.env.PARSE_SERVER_APP_NAME || 'myAppName',
   verifyUserEmails: process.env.PARSE_SERVER_VERIFY_USER_EMAILS || false,
   emailAdapter: {
-        module: '@parse/generic-email-adapter',
+        module: '@parse/simple-mailgun-adapter',
         options: {
             fromAddress: process.env.DEFAULT_FROM_ADDRESS,
             domain: process.env.MAILGUN_DOMAIN,
