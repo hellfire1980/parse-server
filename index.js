@@ -19,12 +19,13 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   publicServerURL: process.env.PARSE_PUBLIC_SERVER_URL || 'http://localhost:1337/parse',
   appName: process.env.PARSE_SERVER_APP_NAME || 'myAppName',
+  verifyUserEmails: process.env.PARSE_SERVER_VERIFY_USER_EMAILS || false,
   emailAdapter: {
-        module: 'parse-server-generic-email-adapter',
+        module: '@parse/generic-email-adapter',
         options: {
-			service: process.env.EMAIL_SERVICE,
-            email: process.env.EMAIL,
-            password: process.env.EMAIL_PASSWORD,
+            fromAddress: process.env.DEFAULT_FROM_ADDRESS,
+            domain: process.env.MAILGUN_DOMAIN,
+            apiKey: process.env.MAILGUN_API_KEY,
         }
   },
   liveQuery: {
