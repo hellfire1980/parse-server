@@ -20,4 +20,9 @@ Parse.Cloud.define('login', async (request) => {
 	const oldSession = await oldSessionsQuery.find({ useMasterKey: true });
 	await Parse.Object.destroyAll(oldSession, { useMasterKey: true });
 	return sessionToken;
+	
+	/*var jsonObject = {
+        "answer": sessionToken
+    };
+	return jsonObject;*/
 });
