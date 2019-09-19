@@ -4,7 +4,7 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
-var SimpleSendGridAdapter = require('@parse/sendgrid-adapter');
+var SimpleSendGridAdapter = require('@sendgrid/mail');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI;
 
