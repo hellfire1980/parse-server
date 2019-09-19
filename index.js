@@ -21,7 +21,7 @@ var api = new ParseServer({
   publicServerURL: process.env.PARSE_PUBLIC_SERVER_URL || 'http://localhost:1337/parse',
   appName: process.env.PARSE_SERVER_APP_NAME || 'myAppName',
   emailAdapter: {
-        module: 'parse-server-simple-mailgun-adapter',
+        module: '@parse/simple-mailgun-adapter',
         options: {
             fromAddress: process.env.DEFAULT_FROM_ADDRESS,
             domain: process.env.MAILGUN_DOMAIN,
