@@ -21,17 +21,15 @@ var api = new ParseServer({
   appName: process.env.PARSE_SERVER_APP_NAME || 'myAppName',
   verifyUserEmails: process.env.PARSE_SERVER_VERIFY_USER_EMAILS || false,
   emailAdapter: {
-      module: 'parse-server-mailjet-adapter',
+      module: 'parsesmtp',
       options: {
-         apiKey: process.env.MAILJET_API_KEY,
-		 apiSecret: process.env.MAILJET_API_SECRET,
-		 apiErrorEmail: process.env.MAILJET_ERROR_EMAIL,
-		 fromName: process.env.MAILJET_FROM_NAME,
-		 fromEmail: process.env.MAILJET_FROM_EMAIL,
-		 passwordResetSubject: "Reset My Password",
-		 passwordResetHtmlPart: "Hi,<p>You requested to reset your password for <b>{{var:appName}}</b>.</p><p>Please, <a href={{var:link}}, target='_blank'>click here to set a new password</a></p>",
-		 verificationEmailSubject: "Verify your email",
-		 verificationEmailHtmlPart: "Hi,<p>You are being asked to confirm the e-mail address {{var:email}} with <b>{{var:appName}}</b></p><p><a href={{var:link}} target='_blank'>Click here to confirm it</a></p>"
+		 host: process.env.SMTP,
+		 port: process.env.PORT,
+		 secureConnection: process.env.secureConnection,
+		 user: process.env.USER,
+		 pass: process.env.PASS,
+		 verificationEmailTitle: 'Verify your email',
+		 passwordRestTitle:'Change your password'
       }
   },
   liveQuery: {

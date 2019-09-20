@@ -13,7 +13,7 @@
     "kerberos": "1.1.x",
     "parse": "2.7.1",
     "parse-server": "*",
-	"parse-server-mailjet-adapter":"1.1.0"
+	"parsesmtp":"1.0.3"
   },
   "scripts": {
     "start": "node index.js"
