@@ -13,6 +13,7 @@
     "kerberos": "~0.0.x",
     "parse": "~1.8.0",
     "parse-server": "*"
+	"parse-server-generic-email-adapter":"0.0.4"
   },
   "scripts": {
     "start": "node index.js"
