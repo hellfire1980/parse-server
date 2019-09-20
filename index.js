@@ -28,10 +28,9 @@ var api = new ParseServer({
 		 apiErrorEmail: process.env.MAILJET_ERROR_EMAIL,
 		 fromName: process.env.MAILJET_FROM_NAME,
 		 fromEmail: process.env.MAILJET_FROM_EMAIL,
+		 passwordResetSubject: "Reset My Password",
+		 passwordResetHtmlPart: "Hi,<p>You requested to reset your password for <b>{{var:appName}}</b>.</p><p>Please, <a href={{var:link}}, target='_blank'>click here to set a new password</a></p>",
 		 verificationEmailSubject: "Verify your email",
-		 // If you do not use template, you can set the plain text part here
-		 //verificationEmailTextPart: "Hi,\n\nYou are being asked to confirm the e-mail address {{var:email}} with {{var:appName}}\n\nClick here to confirm it: {{var:link}}",
-		 // If you do not use template, you can set the html part here
 		 verificationEmailHtmlPart: "Hi,<p>You are being asked to confirm the e-mail address {{var:email}} with <b>{{var:appName}}</b></p><p><a href={{var:link}} target='_blank'>Click here to confirm it</a></p>"
       }
   },
