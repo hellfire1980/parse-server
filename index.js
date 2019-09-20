@@ -23,9 +23,9 @@ var api = new ParseServer({
   emailAdapter: {
       module: "parse-server-generic-email-adapter",
       options: {
-         service: process.env.EMAIL_SERVICE || 'yahoo',
-         email: process.env.EMAIL_ADDRESS,
-         password: process.env.EMAIL_PASSWORD
+         service: 'yahoo',
+         email: 'atv.workshop@yahoo.com',
+         password: 'systew@dw!n'
       }
   },
   liveQuery: {
