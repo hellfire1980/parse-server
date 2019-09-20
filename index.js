@@ -21,34 +21,18 @@ var api = new ParseServer({
   appName: process.env.PARSE_SERVER_APP_NAME || 'myAppName',
   verifyUserEmails: process.env.PARSE_SERVER_VERIFY_USER_EMAILS || false,
   emailAdapter: {
-      module: 'parse-server-sendinblue-adapter',
+      module: 'parse-server-mailjet-adapter',
       options: {
-         apiKey: process.env.SENDINBLUE_API,
-		 fromName: process.env.SENDINBLUE_FROM_NAME,
-		 fromEmail: process.env.SENDINBLUE_FROM_EMAIL,
-		 translation: {
-			default: 'en', // default locale for templates and texts (required)
-			locale: 'locale' // the name of the property that stores the language of the user into the User table. It must be a two-letter language code: 'en', 'fr', 'de' etc. (optional)
-		 },
-		 
-		       // 1. set the subject here, according to the languages you support.
-      // Required only if verificationEmailTemplateId is not defined.
-      verificationEmailSubject: {
-        en: "Verify your email",
-        fr: "Vérifier votre adresse e-mail"
-      },
-      // 2. set the plain text part here, according to the languages you support.
-      // Required only if verificationEmailTemplateId is not defined.
-      verificationEmailTextPart: {
-        en: "Hi,\n\nYou are being asked to confirm the e-mail address {EMAIL} with %APP_NAME%\n\nClick here to confirm it: %LINK%",
-        fr: "Bonjour,\n\nMerci de confirmer l'adresse e-mail {EMAIL} avec %APP_NAME%\n\nCliquez ici pour confirmer : %LINK%"
-      },
-      // 3. set the html text part here, according to the languages you support.
-      // Required only if verificationEmailTemplateId is not defined.
-      verificationEmailHtmlPart: {
-        en: "Hi,<p>You are being asked to confirm the e-mail address {EMAIL} with <b>%APP_NAME%</b></p><p>Click <a href=\"%LINK%\">here</a> to confirm it.</p>",
-        fr: "Bonjour,<p>Merci de confirmer l'adresse e-mail {EMAIL} avec <b>%APP_NAME%</b></p><p>Cliquez <a href=\"%LINK%\">ici</a> pour confirmer.</p>"
-      },
+         apiKey: process.env.MAILJET_API_KEY,
+		 apiSecret: process.env.MAILJET_API_SECRET,
+		 apiErrorEmail: process.env.MAILJET_ERROR_EMAIL,
+		 fromName: process.env.MAILJET_FROM_NAME,
+		 fromEmail: process.env.MAILJET_FROM_EMAIL,
+		 verificationEmailSubject: "Verify your email",
+		 // If you do not use template, you can set the plain text part here
+		 verificationEmailTextPart: "Hi,\n\nYou are being asked to confirm the e-mail address {{var:email}} with {{var:appName}}\n\nClick here to confirm it: {{var:link}}",
+		 // If you do not use template, you can set the html part here
+		 verificationEmailHtmlPart: "Hi,<p>You are being asked to confirm the e-mail address {{var:email}} with <b>{{var:appName}}</b></p><p>Click here to confirm it: {{var:link}}</p>"
       }
   },
   liveQuery: {
