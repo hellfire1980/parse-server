@@ -11,7 +11,10 @@ Parse.Cloud.define('login', async (request) => {
 	const username = request.params.username;
 	const password = request.params.password;
 	const user = await Parse.User.logIn(username, password);
+	const id = user.id;
 	const sessionToken = user.getSessionToken();
+	const vip = user.get("vip");
+	const trialDate = user.get("trialDate");
 	const oldSessionsQuery = new Parse.Query(Parse.Session);
 	
 	oldSessionsQuery.equalTo('user', user);
@@ -19,10 +22,13 @@ Parse.Cloud.define('login', async (request) => {
 	
 	const oldSession = await oldSessionsQuery.find({ useMasterKey: true });
 	await Parse.Object.destroyAll(oldSession, { useMasterKey: true });
-	return sessionToken;
+	//return sessionToken;
 	
-	/*var jsonObject = {
-        "answer": sessionToken
+	var jsonObject = {
+        "sessionToken": sessionToken,
+		"objectId": id,
+		"vip": vip,
+		"trialDate": trialDate
     };
-	return jsonObject;*/
+	return jsonObject;
 });
