@@ -4,6 +4,7 @@
 var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
+var unirest = require('unirest');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI;
 
@@ -58,8 +59,24 @@ app.get('/', function(req, res) {
 
 // There will be a test page available on the /test path of your server url
 // Remove this before launching your app
-app.get('/test', function(req, res) {
-  res.sendFile(path.join(__dirname, '/public/test.html'));
+//app.get('/test', function(req, res) {
+//  res.sendFile(path.join(__dirname, '/public/test.html'));
+//});
+
+// -------------------
+//	Open subscription
+// -------------------
+// This is a post methos without authentication require
+app.use(express.json());
+
+app.post('/authSubscription', function(req, res) {
+	 unirest.post("http://localhost:1337/parse/functions/authSubscription")
+    .headers({'X-Parse-Application-Id': process.env.APP_ID, 'Content-Type': 'application/json'})
+	.send(req.body)
+    .end(function(response) {
+		console.log(response.body);
+		res.status(200).send();
+     });
 });
 
 var port = process.env.PORT || 1337;
