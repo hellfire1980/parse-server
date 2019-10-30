@@ -14,7 +14,8 @@
     "parse": "2.7.1",
     "parse-server": "*",
     "parse-server-mailjet-adapter":"1.1.0",
-    "unirest":"0.6.0"
+    "unirest":"0.6.0",
+	"@skavinvarnan/cryptlib":"1.0.3"
   },
   "scripts": {
     "start": "node index.js"

@@ -5,6 +5,7 @@ var express = require('express');
 var ParseServer = require('parse-server').ParseServer;
 var path = require('path');
 var unirest = require('unirest');
+var cryptLib = require('@skavinvarnan/cryptlib');
 
 var databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI;
 

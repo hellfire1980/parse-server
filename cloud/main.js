@@ -57,12 +57,12 @@ Parse.Cloud.define('authSubscription', async (request) => {
 	var remark;
 	
 	if (product_id == 'ad524b6771ff') {
-		vip = "monthly";
+		vip = "monthly-pro";
 		monthVal = 1;
 	}
 	
 	if (product_id == 'ad03f62ba4a5') {
-		vip = "yearly";
+		vip = "yearly-pro";
 		monthVal = 12;
 	}
 	
