@@ -74,28 +74,21 @@ Parse.Cloud.define('authSubscription', async (request) => {
 		const user = await userQuery.first({ useMasterKey: true });
 		
 		if (user != undefined) {
-			var expireDate = user.get("expireDate")
+			var expireDate = user.get("expireDate");
 			
 			todayDate = new Date(new Date().toUTCString());
 			
 			if (expireDate == undefined) {
-				calExpireDate = new Date(todayDate.setTime(todayDate.getMonth + monthVal));
+				calExpireDate = new Date(todayDate.setMonth(todayDate.getMonth() + monthVal));
 				user.set("expireDate", calExpireDate);
 			} else {
-				calExpireDate = new Date(expireDate.setTime(expireDate.getMonth + monthVal));
+				calExpireDate = new Date(expireDate.setMonth(expireDate.getMonth() + monthVal));
 				user.set("expireDate", calExpireDate);
 			}
 			
 			user.set("vip", vip);
 			user.set("subscribeDate", todayDate);
-			user.save(null, { useMasterKey: true, 
-				success: function(data) {
-					response.success();
-				},
-				error: function(error) {
-					response.error(error.message);
-				}
-			});
+			user.save(null, { useMasterKey: true });
 		} else {
 			remark = "User email not exists";
 		}
@@ -112,6 +105,169 @@ Parse.Cloud.define('authSubscription', async (request) => {
 		"subscribeDate": todayDate,
 		"expireDate": calExpireDate,
 		"remark": remark
+    };
+	
+	return jsonObject;
+});
+
+Parse.Cloud.define('authGoogleSubscription', async (request) => {
+	const crypto = require('crypto');
+	const object_id = request.params.ObjectId;
+	const date = request.params.date;
+	const sku = request.params.sku;
+	const token = request.params.token;
+	const userQuery = new Parse.Query(Parse.User);
+	const user = await userQuery.first({ useMasterKey: true });
+	const key = 'codingaffairscom';
+	
+	var http_ipn_hash = request.headers.http_ipn_hash;
+	var hash = crypto.createHmac('sha512', key)
+		.update(object_id + date + sku + token)
+		.digest('hex');
+	var todayDate;
+	var calExpireDate;
+	var vip;
+	var monthVal = 0;
+		
+	if (http_ipn_hash == undefined || http_ipn_hash == '' || http_ipn_hash != hash) {
+		throw new Error('Invalid content');
+	}
+	
+	if (sku == 'com.atvx.launcher.iab.monthly') {
+		vip = 'monthly';
+		monthVal = 1;
+	} else if (sku == 'com.atvx.launcher.iab.yearly') {
+		vip = 'yearly';
+		monthVal = 12;
+	}
+	
+	if (user != undefined && monthVal > 0 && vip != '') {
+		var expireDate = user.get("expireDate");
+		
+		todayDate = new Date(new Date().toUTCString());
+		
+		if (expireDate == undefined) {
+			calExpireDate = new Date(todayDate.setMonth(todayDate.getMonth() + monthVal));
+			user.set("expireDate", calExpireDate);
+		} else {
+			calExpireDate = new Date(expireDate.setMonth(expireDate.getMonth() + monthVal));
+			user.set("expireDate", calExpireDate);
+		}
+		
+		user.set("vip", vip);
+		user.set("subscribeDate", todayDate);
+		user.save(null, { useMasterKey: true });
+	}
+	
+	var jsonObject = {
+		"objectId": object_id,
+		"date": date,
+		"vip": vip,
+		"subscribeDate": todayDate,
+		"expireDate": calExpireDate
+    };
+	
+	return jsonObject;
+});
+
+
+Parse.Cloud.define('rewardCoin', async (request) => {
+	const crypto = require('crypto');
+	const object_id = request.params.ObjectId;
+	const date = request.params.date;
+	const coin = Number(request.params.coin);
+	const userQuery = new Parse.Query(Parse.User);
+	const user = await userQuery.first({ useMasterKey: true });
+	const key = 'codingaffairscom';
+	
+	var http_ipn_hash = request.headers.http_ipn_hash;
+	var hash = crypto.createHmac('sha512', key)
+		.update(object_id + date + coin)
+		.digest('hex');
+		
+	if (http_ipn_hash == undefined || http_ipn_hash == '' || http_ipn_hash != hash) {
+		throw new Error('Invalid content');
+	}
+	
+	if (user != undefined && coin > 0) {
+		var availCoins = user.get("coin");
+		
+		if (availCoins == undefined) {
+			availCoins = 0;
+		}
+		
+		availCoins += coin;
+		
+		user.set("coin", availCoins);
+		user.save(null, { useMasterKey: true });
+	}
+	
+	var jsonObject = {
+		"objectId": object_id,
+		"coin": availCoins
+    };
+	
+	return jsonObject;
+});
+
+Parse.Cloud.define('redeem', async (request) => {
+	const crypto = require('crypto');
+	const object_id = request.params.ObjectId;
+	const requireCoin = Number(request.params.requireCoin);
+	const vip = request.params.sub_name;
+	const redemption = Number(request.params.redemption);
+	const userQuery = new Parse.Query(Parse.User);
+	const user = await userQuery.first({ useMasterKey: true });
+	const key = 'codingaffairscom';
+	
+	var http_ipn_hash = request.headers.http_ipn_hash;
+	var hash = crypto.createHmac('sha512', key)
+		.update(object_id + requireCoin + vip + redemption)
+		.digest('hex');
+	var todayDate;
+	var calExpireDate;
+	var monthVal = 0;
+	
+	if (http_ipn_hash == undefined || http_ipn_hash == '' || http_ipn_hash != hash) {
+		throw new Error('Invalid content');
+	}
+	
+	if (redemption == 0) {
+		monthVal = 1;
+	} else if (redemption == 1) {
+		monthVal = 12;
+	}
+	
+	if (user != undefined && monthVal > 0) {
+		var availCoins = user.get("coin");
+		var expireDate = user.get("expireDate");
+		var balCoin = availCoins;
+		
+		if (availCoins != undefined && availCoins >= requireCoin) {
+			todayDate = new Date(new Date().toUTCString());
+			balCoin -= requireCoin;
+			
+			if (expireDate == undefined) {
+				calExpireDate = new Date(todayDate.setMonth(todayDate.getMonth() + monthVal));
+				user.set("expireDate", calExpireDate);
+			} else {
+				calExpireDate = new Date(expireDate.setMonth(expireDate.getMonth() + monthVal));
+				user.set("expireDate", calExpireDate);
+			}
+			//request.log.info('info test');
+			user.set("vip", vip);
+			user.set("subscribeDate", todayDate);
+			user.set("coin", balCoin)
+			user.save(null, { useMasterKey: true });
+		}
+	}
+	
+	var jsonObject = {
+		"objectId": object_id,
+		"coin": balCoin,
+		"vip": vip,
+        "subscribeDate": todayDate,
+		"expireDate": calExpireDate
     };
 	
 	return jsonObject;
