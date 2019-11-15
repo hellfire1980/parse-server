@@ -259,3 +259,33 @@ Parse.Cloud.define('redeem', async (request) => {
 	
 	return jsonObject;
 });
+
+Parse.Cloud.define('revokeSubscription', async (request) => {
+	const crypto = require('crypto');
+	const object_id = request.params.ObjectId;
+	const date = request.params.date;
+	const user = request.user;
+	const key = 'codingaffairscom';
+	
+	var http_ipn_hash = request.headers.http_ipn_hash;
+	var hash = crypto.createHmac('sha512', key)
+		.update(object_id + date)
+		.digest('hex');
+	
+	if (http_ipn_hash == undefined || http_ipn_hash == '' || http_ipn_hash != hash) {
+		throw new Error('Invalid content');
+	}
+	
+	if (user != undefined) {
+		user.unset('vip');
+		user.unset('expireDate');
+		user.unset('subscribeDate');
+		user.save(null, { useMasterKey: true });
+	}
+	
+	var jsonObject = {
+		"objectId": object_id
+    };
+	
+	return jsonObject;
+});
