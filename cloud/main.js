@@ -116,8 +116,7 @@ Parse.Cloud.define('authGoogleSubscription', async (request) => {
 	const date = request.params.date;
 	const sku = request.params.sku;
 	const token = request.params.token;
-	const userQuery = new Parse.Query(Parse.User);
-	const user = await userQuery.first({ useMasterKey: true });
+	const user = request.user;
 	const key = 'codingaffairscom';
 	
 	var http_ipn_hash = request.headers.http_ipn_hash;
@@ -125,7 +124,6 @@ Parse.Cloud.define('authGoogleSubscription', async (request) => {
 		.update(object_id + date + sku + token)
 		.digest('hex');
 	var todayDate;
-	var calExpireDate;
 	var vip;
 	var monthVal = 0;
 		
@@ -142,20 +140,12 @@ Parse.Cloud.define('authGoogleSubscription', async (request) => {
 	}
 	
 	if (user != undefined && monthVal > 0 && vip != '') {
-		var expireDate = user.get("expireDate");
-		
 		todayDate = new Date(new Date().toUTCString());
-		
-		if (expireDate == undefined) {
-			calExpireDate = new Date(todayDate.setMonth(todayDate.getMonth() + monthVal));
-			user.set("expireDate", calExpireDate);
-		} else {
-			calExpireDate = new Date(expireDate.setMonth(expireDate.getMonth() + monthVal));
-			user.set("expireDate", calExpireDate);
-		}
 		
 		user.set("vip", vip);
 		user.set("subscribeDate", todayDate);
+		user.set("googleToken", token);
+		
 		user.save(null, { useMasterKey: true });
 	}
 	
@@ -163,8 +153,7 @@ Parse.Cloud.define('authGoogleSubscription', async (request) => {
 		"objectId": object_id,
 		"date": date,
 		"vip": vip,
-		"subscribeDate": todayDate,
-		"expireDate": calExpireDate
+		"subscribeDate": todayDate
     };
 	
 	return jsonObject;
@@ -176,8 +165,7 @@ Parse.Cloud.define('rewardCoin', async (request) => {
 	const object_id = request.params.ObjectId;
 	const date = request.params.date;
 	const coin = Number(request.params.coin);
-	const userQuery = new Parse.Query(Parse.User);
-	const user = await userQuery.first({ useMasterKey: true });
+	const user = request.user;
 	const key = 'codingaffairscom';
 	
 	var http_ipn_hash = request.headers.http_ipn_hash;
@@ -216,8 +204,7 @@ Parse.Cloud.define('redeem', async (request) => {
 	const requireCoin = Number(request.params.requireCoin);
 	const vip = request.params.sub_name;
 	const redemption = Number(request.params.redemption);
-	const userQuery = new Parse.Query(Parse.User);
-	const user = await userQuery.first({ useMasterKey: true });
+	const user = request.user;
 	const key = 'codingaffairscom';
 	
 	var http_ipn_hash = request.headers.http_ipn_hash;
